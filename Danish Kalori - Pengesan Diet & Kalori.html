@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danish Kalori - Pengesan Diet & Kalori Comel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts Inter & Quicksand for cute aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Quicksand', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        pink: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                        },
+                        pastel: {
+                            pink: '#FDE2E4',
+                            lightpink: '#FFF0F3',
+                            rose: '#FFCAD4',
+                            accent: '#E76F51',
+                            darkpink: '#D88398',
+                            softbg: '#FFF8F9',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: #FFF8F9;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #f43f5e;
+            color: #e11d48;
+            font-weight: 700;
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(251, 113, 133, 0.12), 0 8px 10px -6px rgba(251, 113, 133, 0.08);
+        }
+    </style>
+</head>
+<body class="text-slate-700 min-h-screen flex flex-col justify-between selection:bg-pink-200">
+
+    <header class="bg-white/90 backdrop-blur-md border-b border-pink-100 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Brand Logo & Image -->
+                <div class="flex items-center gap-3">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('logo-upload-input').click()" title="Klik untuk tukar/kemaskini gambar logo">
+                        <img id="app-logo-img" src="1000413470.png" onerror="this.src='https://placehold.co/120x120/fecdd3/be123c?text=Danish+Kalori'" alt="Danish Kalori Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl object-cover border-2 border-pink-300 shadow-sm transition-transform group-hover:scale-105">
+                        <div class="absolute -bottom-1 -right-1 bg-pink-500 text-white p-1 rounded-full text-[10px] shadow-md">
+                            <i data-lucide="camera" class="w-3 h-3"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="logo-upload-input" accept="image/*" class="hidden" onchange="handleLogoUpload(event)">
+                    <div>
+                        <span class="text-xl sm:text-2xl font-bold text-pink-600 tracking-tight flex items-center gap-1">
+                            Danish Kalori
+                            <i data-lucide="heart" class="w-4 h-4 fill-pink-400 text-pink-400"></i>
+                        </span>
+                        <span class="block text-xs text-pink-400 font-medium -mt-1">Diet Sihat & Comel Harian</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Tabs -->
+                <nav class="hidden md:flex space-x-6 h-full">
+                    <button onclick="switchTab('tracker')" id="nav-tracker" class="tab-btn active inline-flex items-center gap-2 px-2 pt-1 text-sm font-semibold text-slate-600 hover:text-pink-600 transition-colors">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i>
+                        Penjejak Kalori
+                    </button>
+                    <button onclick="switchTab('calculator')" id="nav-calculator" class="tab-btn inline-flex items-center gap-2 px-2 pt-1 text-sm font-semibold text-slate-600 hover:text-pink-600 transition-colors">
+                        <i data-lucide="calculator" class="w-4 h-4 text-pink-500"></i>
+                        Kalkulator BMR/TDEE
+                    </button>
+                    <button onclick="switchTab('recipes')" id="nav-recipes" class="tab-btn inline-flex items-center gap-2 px-2 pt-1 text-sm font-semibold text-slate-600 hover:text-pink-600 transition-colors">
+                        <i data-lucide="utensils" class="w-4 h-4 text-pink-500"></i>
+                        Cadangan Menu
+                    </button>
+                    <button onclick="switchTab('github')" id="nav-github" class="tab-btn inline-flex items-center gap-2 px-2 pt-1 text-sm font-semibold text-slate-600 hover:text-pink-600 transition-colors">
+                        <i data-lucide="github" class="w-4 h-4 text-pink-500"></i>
+                        Panduan GitHub
+                    </button>
+                </nav>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="text-pink-600 hover:text-pink-700 p-2 rounded-xl bg-pink-50">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 border-b border-pink-100 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchTab('tracker'); toggleMobileMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-pink-50 rounded-xl text-left">
+                <i data-lucide="sparkles" class="w-4 h-4 text-pink-500"></i> Penjejak Kalori
+            </button>
+            <button onclick="switchTab('calculator'); toggleMobileMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-pink-50 rounded-xl text-left">
+                <i data-lucide="calculator" class="w-4 h-4 text-pink-500"></i> Kalkulator BMR/TDEE
+            </button>
+            <button onclick="switchTab('recipes'); toggleMobileMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-pink-50 rounded-xl text-left">
+                <i data-lucide="utensils" class="w-4 h-4 text-pink-500"></i> Cadangan Menu Sihat
+            </button>
+            <button onclick="switchTab('github'); toggleMobileMenu()" class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-pink-50 rounded-xl text-left">
+                <i data-lucide="github" class="w-4 h-4 text-pink-500"></i> Panduan GitHub Pages
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+        <section id="section-tracker" class="space-y-8">
+            
+            <!-- Welcome Header Card -->
+            <div class="bg-gradient-to-r from-pink-100 via-pink-50 to-rose-100 border border-pink-200 p-6 rounded-3xl custom-shadow flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4">
+                    <img id="welcome-logo-img" src="1000413470.png" onerror="this.src='https://placehold.co/100x100/fecdd3/be123c?text=DK'" alt="Danish Kalori Avatar" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-4 border-white shadow-md object-cover shrink-0">
+                    <div>
+                        <h1 class="text-xl sm:text-2xl font-bold text-pink-700">Selamat Datang ke Danish Kalori! ✨</h1>
+                        <p class="text-xs sm:text-sm text-pink-600 mt-1">Jom pantau pemakanan harian anda dengan ceria & capai berat ideal bersama-sama!</p>
+                    </div>
+                </div>
+                <div class="text-right shrink-0">
+                    <span id="date-display" class="text-xs font-bold px-4 py-2 bg-white/80 text-pink-600 rounded-2xl border border-pink-200 shadow-sm inline-block">
+                        Hari Ini
+                    </span>
+                </div>
+            </div>
+
+            <!-- Overview Progress Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Calorie Main Card -->
+                <div class="md:col-span-2 bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex flex-col justify-between">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-800">Kemajuan Kalori Harian</h2>
+                            <p class="text-xs text-slate-400">Ringkasan pengambilan tenaga hari ini</p>
+                        </div>
+                        <span class="text-xs font-bold px-3 py-1 bg-pink-50 text-pink-600 rounded-full border border-pink-100 flex items-center gap-1">
+                            <i data-lucide="flame" class="w-3.5 h-3.5 text-pink-500"></i> Kalori
+                        </span>
+                    </div>
+
+                    <!-- Progress Numbers -->
+                    <div class="grid grid-cols-3 gap-3 text-center my-4">
+                        <div class="p-3 bg-pink-50/50 border border-pink-100 rounded-2xl">
+                            <span class="block text-[11px] text-pink-500 uppercase font-bold">Diambil</span>
+                            <span id="calories-eaten" class="text-2xl font-extrabold text-slate-800">0</span>
+                            <span class="text-[10px] text-slate-400">kcal</span>
+                        </div>
+                        <div class="p-3 bg-pink-100/60 border border-pink-200 rounded-2xl">
+                            <span class="block text-[11px] text-pink-700 uppercase font-bold">Sasaran</span>
+                            <span id="calorie-target-display" class="text-2xl font-extrabold text-pink-600">2000</span>
+                            <span class="text-[10px] text-pink-500">kcal</span>
+                        </div>
+                        <div class="p-3 bg-pink-50/50 border border-pink-100 rounded-2xl">
+                            <span class="block text-[11px] text-pink-500 uppercase font-bold">Baki</span>
+                            <span id="calories-remaining" class="text-2xl font-extrabold text-slate-800">2000</span>
+                            <span class="text-[10px] text-slate-400">kcal</span>
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="space-y-2">
+                        <div class="w-full bg-pink-100 h-4 rounded-full overflow-hidden p-0.5 border border-pink-200">
+                            <div id="calorie-progress-bar" class="bg-gradient-to-r from-pink-400 to-rose-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs font-semibold text-pink-500">
+                            <span>0%</span>
+                            <span id="progress-percentage-text">0% Dicapai</span>
+                            <span>100%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Water Tracker Card -->
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <div class="flex items-center gap-2">
+                                <div class="p-2.5 bg-sky-50 text-sky-500 rounded-2xl border border-sky-100">
+                                    <i data-lucide="droplets" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h2 class="text-base font-bold text-slate-800">Penjejak Air</h2>
+                                    <p class="text-[11px] text-slate-400">Hidrasi Sihat</p>
+                                </div>
+                            </div>
+                            <span class="text-[11px] text-sky-600 bg-sky-50 px-2.5 py-1 rounded-full font-bold border border-sky-100">2.5 Litrik</span>
+                        </div>
+
+                        <div class="text-center my-3">
+                            <div class="text-3xl font-extrabold text-sky-500" id="water-intake-text">0 <span class="text-sm font-normal text-slate-400">ml</span></div>
+                            <p class="text-xs text-slate-400 mt-1" id="water-glass-count">0 daripada 10 gelas (250ml)</p>
+                        </div>
+
+                        <!-- Water Progress Grid -->
+                        <div id="water-icons-grid" class="grid grid-cols-5 gap-2 my-4">
+                            <!-- Dynamically generated water drops -->
+                        </div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <button onclick="addWater(250)" class="flex-1 bg-sky-50 hover:bg-sky-100 text-sky-600 py-2.5 px-3 rounded-2xl font-bold text-xs flex items-center justify-center gap-1 transition-all border border-sky-200 active:scale-95 shadow-sm">
+                            <i data-lucide="plus" class="w-4 h-4"></i> +250ml
+                        </button>
+                        <button onclick="resetWater()" class="bg-slate-50 hover:bg-slate-100 text-slate-400 p-2.5 rounded-2xl transition-all border border-slate-200 active:scale-95" title="Sifar Air">
+                            <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Meal Logging & Diary Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Add Food Form -->
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow h-fit">
+                    <h3 class="text-base font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-5 h-5 text-pink-500"></i>
+                        Catat Makanan / Minuman
+                    </h3>
+                    <form id="add-food-form" onsubmit="handleAddFood(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-pink-600 mb-1">Nama Makanan / Minuman</label>
+                            <input type="text" id="food-name" placeholder="Cth: Nasi Kerabu Ayam Panggang" required
+                                class="w-full px-3.5 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-pink-600 mb-1">Kalori (kcal)</label>
+                                <input type="number" id="food-calories" placeholder="Cth: 400" min="1" required
+                                    class="w-full px-3.5 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-pink-600 mb-1">Waktu Makan</label>
+                                <select id="meal-type" class="w-full px-3.5 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/20">
+                                    <option value="Sarapan">Sarapan</option>
+                                    <option value="Tengah Hari">Tengah Hari</option>
+                                    <option value="Malam">Malam</option>
+                                    <option value="Snek">Snek</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-3 rounded-2xl shadow-md transition-all text-sm flex items-center justify-center gap-2 active:scale-95">
+                            <i data-lucide="heart" class="w-4 h-4 fill-white"></i> Tambah Makanan
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Food Diary Lists -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-pink-100 custom-shadow">
+                    <div class="flex justify-between items-center mb-6">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-800">Diari Pemakanan Hari Ini</h3>
+                            <p class="text-xs text-slate-400">Rekod sajian Danish Kalori mengikut waktu</p>
+                        </div>
+                        <button onclick="clearAllDiary()" class="text-xs font-semibold text-rose-500 hover:text-rose-600 border border-rose-100 bg-rose-50 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Padam Semua
+                        </button>
+                    </div>
+
+                    <!-- Meal Groups Container -->
+                    <div class="space-y-5">
+                        <!-- Sarapan -->
+                        <div class="border-b border-pink-50 pb-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-xs font-bold text-pink-600 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-pink-300"></span> Sarapan
+                                </h4>
+                                <span id="total-Sarapan" class="text-xs font-bold text-slate-500">0 kcal</span>
+                            </div>
+                            <div id="list-Sarapan" class="space-y-2">
+                                <p class="text-xs text-slate-300 italic">Tiada makanan dicatat lagi</p>
+                            </div>
+                        </div>
+
+                        <!-- Tengah Hari -->
+                        <div class="border-b border-pink-50 pb-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-xs font-bold text-pink-600 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-400"></span> Tengah Hari
+                                </h4>
+                                <span id="total-Tengah Hari" class="text-xs font-bold text-slate-500">0 kcal</span>
+                            </div>
+                            <div id="list-Tengah Hari" class="space-y-2">
+                                <p class="text-xs text-slate-300 italic">Tiada makanan dicatat lagi</p>
+                            </div>
+                        </div>
+
+                        <!-- Malam -->
+                        <div class="border-b border-pink-50 pb-3">
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-xs font-bold text-pink-600 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span> Malam
+                                </h4>
+                                <span id="total-Malam" class="text-xs font-bold text-slate-500">0 kcal</span>
+                            </div>
+                            <div id="list-Malam" class="space-y-2">
+                                <p class="text-xs text-slate-300 italic">Tiada makanan dicatat lagi</p>
+                            </div>
+                        </div>
+
+                        <!-- Snek -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="text-xs font-bold text-pink-600 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-pink-200"></span> Snek Sihat
+                                </h4>
+                                <span id="total-Snek" class="text-xs font-bold text-slate-500">0 kcal</span>
+                            </div>
+                            <div id="list-Snek" class="space-y-2">
+                                <p class="text-xs text-slate-300 italic">Tiada makanan dicatat lagi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-calculator" class="hidden space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Form Input -->
+                <div class="lg:col-span-6 bg-white p-6 rounded-3xl border border-pink-100 custom-shadow">
+                    <div class="mb-6">
+                        <h2 class="text-xl font-bold text-pink-700">Kalkulator Kalori Danish</h2>
+                        <p class="text-xs text-slate-400">Kira Basal Metabolic Rate (BMR) & TDEE anda untuk diet tepat!</p>
+                    </div>
+
+                    <form id="bmr-form" onsubmit="calculateCalories(event)" class="space-y-4">
+                        <!-- Gender Selection -->
+                        <div>
+                            <label class="block text-xs font-bold text-pink-600 mb-1">Jantina</label>
+                            <div class="grid grid-cols-2 gap-3">
+                                <label class="cursor-pointer border border-pink-200 rounded-2xl p-3 flex items-center justify-center gap-2 hover:bg-pink-50/50 has-[:checked]:border-pink-500 has-[:checked]:bg-pink-50">
+                                    <input type="radio" name="gender" value="female" class="text-pink-600 focus:ring-pink-400" checked>
+                                    <span class="text-sm font-bold text-slate-700">Wanita 🌸</span>
+                                </label>
+                                <label class="cursor-pointer border border-pink-200 rounded-2xl p-3 flex items-center justify-center gap-2 hover:bg-pink-50/50 has-[:checked]:border-pink-500 has-[:checked]:bg-pink-50">
+                                    <input type="radio" name="gender" value="male" class="text-pink-600 focus:ring-pink-400">
+                                    <span class="text-sm font-bold text-slate-700">Lelaki 🙋‍♂️</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Age, Weight, Height -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold text-pink-600 mb-1">Umur (tahun)</label>
+                                <input type="number" id="calc-age" min="10" max="100" value="23" required
+                                    class="w-full px-3 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/10">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-pink-600 mb-1">Berat (kg)</label>
+                                <input type="number" id="calc-weight" min="30" max="250" step="0.1" value="58" required
+                                    class="w-full px-3 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/10">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-pink-600 mb-1">Tinggi (cm)</label>
+                                <input type="number" id="calc-height" min="100" max="230" value="160" required
+                                    class="w-full px-3 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/10">
+                            </div>
+                        </div>
+
+                        <!-- Activity Level -->
+                        <div>
+                            <label class="block text-xs font-bold text-pink-600 mb-1">Tahap Aktiviti Harian</label>
+                            <select id="calc-activity" class="w-full px-3.5 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/10">
+                                <option value="1.2">Sedari (Kurang / Tiada Senaman)</option>
+                                <option value="1.375" selected>Aktif Sedikit (Senaman Ringan 1-3 hari/minggu)</option>
+                                <option value="1.55">Sederhana Aktif (Senaman 3-5 hari/minggu)</option>
+                                <option value="1.725">Sangat Aktif (Senaman Berat 6-7 hari/minggu)</option>
+                            </select>
+                        </div>
+
+                        <!-- Goal -->
+                        <div>
+                            <label class="block text-xs font-bold text-pink-600 mb-1">Sasaran Diet Anda</label>
+                            <select id="calc-goal" class="w-full px-3.5 py-2.5 text-sm border border-pink-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-pink-400 bg-pink-50/10">
+                                <option value="-400" selected>Turun Berat Badan (-400 kcal Defisit)</option>
+                                <option value="-200">Turun Berat Santai (-200 kcal)</option>
+                                <option value="0">Kekalkan Berat Badan (Maintenance)</option>
+                                <option value="300">Tambah Berat Badan / Bina Otot (+300 kcal)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 rounded-2xl shadow-md transition-all text-sm flex items-center justify-center gap-2">
+                            <i data-lucide="calculator" class="w-4 h-4"></i> Kira Sasaran Kalori Saya
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Results Section -->
+                <div class="lg:col-span-6 space-y-6">
+                    <div id="calc-results-card" class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex flex-col justify-between h-full">
+                        <div>
+                            <h3 class="text-lg font-bold text-pink-700 mb-1">Keputusan Kalori Anda</h3>
+                            <p class="text-xs text-slate-400 mb-6">Menggunakan formula saintifik Mifflin-St Jeor</p>
+
+                            <!-- Primary Stat Boxes -->
+                            <div class="grid grid-cols-2 gap-4 mb-6">
+                                <div class="p-4 bg-pink-50/50 border border-pink-100 rounded-2xl">
+                                    <span class="block text-xs text-pink-500 font-bold">BMR (Metabolisme Asas)</span>
+                                    <span id="res-bmr" class="text-2xl font-extrabold text-slate-800">1,350</span>
+                                    <span class="text-[10px] text-slate-400 block">kcal/hari</span>
+                                </div>
+                                <div class="p-4 bg-pink-100/60 border border-pink-200 rounded-2xl">
+                                    <span class="block text-xs text-pink-700 font-bold">TDEE (Tenaga Dibakar)</span>
+                                    <span id="res-tdee" class="text-2xl font-extrabold text-pink-600">1,850</span>
+                                    <span class="text-[10px] text-pink-500 block">kcal/hari</span>
+                                </div>
+                            </div>
+
+                            <!-- Target Box -->
+                            <div class="bg-gradient-to-r from-pink-500 to-rose-500 text-white p-5 rounded-2xl shadow-md mb-6">
+                                <span class="text-xs uppercase font-bold tracking-wider opacity-90 block">Cadangan Pengambilan Danish Kalori</span>
+                                <div class="text-4xl font-black mt-1" id="res-target">1,450 <span class="text-lg font-normal opacity-90">kcal / hari</span></div>
+                                <p id="res-goal-desc" class="text-xs mt-2 opacity-90">Defisit kalori disasarkan untuk penurunan berat badan secara berperingkat & selamat.</p>
+                            </div>
+
+                            <!-- Macronutrients Breakdown -->
+                            <h4 class="text-xs font-bold text-pink-600 uppercase tracking-wider mb-3">Pecahan Makronutrien Harian</h4>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="p-3 border border-pink-100 bg-pink-50/30 rounded-2xl text-center">
+                                    <span class="block text-[11px] text-pink-600 font-bold">Protein (30%)</span>
+                                    <span id="res-protein" class="text-base font-extrabold text-slate-800">108g</span>
+                                </div>
+                                <div class="p-3 border border-pink-100 bg-pink-50/30 rounded-2xl text-center">
+                                    <span class="block text-[11px] text-pink-600 font-bold">Karbo (40%)</span>
+                                    <span id="res-carbs" class="text-base font-extrabold text-slate-800">145g</span>
+                                </div>
+                                <div class="p-3 border border-pink-100 bg-pink-50/30 rounded-2xl text-center">
+                                    <span class="block text-[11px] text-pink-600 font-bold">Lemak (30%)</span>
+                                    <span id="res-fat" class="text-base font-extrabold text-slate-800">48g</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Apply Button -->
+                        <div class="mt-6 pt-4 border-t border-pink-100">
+                            <button onclick="applyCalorieTarget()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-2xl text-sm transition-colors flex items-center justify-center gap-2">
+                                <i data-lucide="check-circle-2" class="w-4 h-4 text-pink-400"></i> Simpan Sebagai Sasaran Harian
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section-recipes" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-pink-700">Cadangan Menu Danish Kalori 🥗</h2>
+                    <p class="text-xs text-slate-400">Menu hidangan tempatan sihat, rendah kalori, dan lazat</p>
+                </div>
+                
+                <!-- Filter categories -->
+                <div class="flex gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0">
+                    <button onclick="filterRecipes('all')" class="recipe-filter-btn active bg-pink-500 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all">Semua</button>
+                    <button onclick="filterRecipes('sarapan')" class="recipe-filter-btn bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 text-xs font-bold px-4 py-2 rounded-xl transition-all">Sarapan</button>
+                    <button onclick="filterRecipes('utama')" class="recipe-filter-btn bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 text-xs font-bold px-4 py-2 rounded-xl transition-all">Hidangan Utama</button>
+                    <button onclick="filterRecipes('snek')" class="recipe-filter-btn bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 text-xs font-bold px-4 py-2 rounded-xl transition-all">Snek Comel</button>
+                </div>
+            </div>
+
+            <!-- Recipes Grid -->
+            <div id="recipes-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically Populated Recipes -->
+            </div>
+        </section>
+
+        <section id="section-github" class="hidden space-y-8">
+            <div class="bg-gradient-to-r from-pink-600 to-rose-500 text-white p-8 rounded-3xl shadow-lg relative overflow-hidden">
+                <div class="relative z-10 max-w-2xl">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/20 text-white border border-white/30 mb-3">
+                        <i data-lucide="globe" class="w-3.5 h-3.5"></i> Muat Naik Laman Web
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">Panduan GitHub Pages 'Danish Kalori'</h2>
+                    <p class="text-pink-100 text-xs sm:text-sm leading-relaxed">Ikuti 4 langkah mudah ini untuk melancarkan laman web diet anda secara percuma supaya boleh dibuka di telefon bimbit anda bila-bila masa!</p>
+                </div>
+                <div class="absolute right-0 bottom-0 opacity-10 translate-x-8 translate-y-8 pointer-events-none">
+                    <i data-lucide="github" class="w-80 h-80 text-white"></i>
+                </div>
+            </div>
+
+            <!-- Steps List -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex gap-4">
+                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-2xl font-bold flex items-center justify-center shrink-0 text-lg">1</div>
+                    <div class="space-y-1.5">
+                        <h3 class="font-bold text-slate-800 text-sm">Daftar Akaun GitHub & Simpan Fail</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            1. Pergi ke <a href="https://github.com" target="_blank" class="text-pink-600 font-bold underline">github.com</a> dan buat akaun.<br>
+                            2. Simpan kod sumber ini sebagai fail <code class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded border border-pink-100 font-mono text-[11px]">index.html</code>.<br>
+                            3. Pastikan gambar <code class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded border border-pink-100 font-mono text-[11px]">1000413470.png</code> berada dalam folder yang sama!
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex gap-4">
+                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-2xl font-bold flex items-center justify-center shrink-0 text-lg">2</div>
+                    <div class="space-y-1.5">
+                        <h3 class="font-bold text-slate-800 text-sm">Cipta Repositori (New Repository)</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            1. Klik pada butang **"+"** di GitHub dan pilih **New repository**.<br>
+                            2. Letakkan nama repositori: <code class="bg-pink-50 text-pink-600 px-2 py-0.5 rounded border border-pink-100 font-mono text-[11px]">danish-kalori</code>.<br>
+                            3. Tetapkan kepada **Public** dan tekan **Create repository**.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex gap-4">
+                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-2xl font-bold flex items-center justify-center shrink-0 text-lg">3</div>
+                    <div class="space-y-1.5">
+                        <h3 class="font-bold text-slate-800 text-sm">Muat Naik Fail</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            1. Klik pautan **uploading an existing file**.<br>
+                            2. Muat naik fail <code class="bg-pink-50 text-pink-600 px-1.5 py-0.5 rounded font-mono text-[11px]">index.html</code> & gambar logo anda.<br>
+                            3. Klik butang hijau **Commit changes**.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-3xl border border-pink-100 custom-shadow flex gap-4">
+                    <div class="w-10 h-10 bg-pink-100 text-pink-600 rounded-2xl font-bold flex items-center justify-center shrink-0 text-lg">4</div>
+                    <div class="space-y-1.5">
+                        <h3 class="font-bold text-slate-800 text-sm">Aktifkan GitHub Pages</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            1. Masuk ke **Settings** > **Pages**.<br>
+                            2. Di bawah *Branch*, pilih **main** (atau master) dan tekan **Save**.<br>
+                            3. Laman web anda sedia digunakan secara dalam talian!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-pink-100 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-400">
+            <p class="font-bold text-pink-500 flex items-center justify-center gap-1">
+                Danish Kalori © 2026 - Dihias Dengan Kasih Sayang 💕
+            </p>
+            <p class="mt-1 text-[11px]">Data disimpan dengan selamat di pelayar anda (LocalStorage).</p>
+        </div>
+    </footer>
+
+    <script>
+        // Application State
+        let appState = {
+            targetCalories: 1500,
+            waterIntake: 0,
+            waterTarget: 2500,
+            foodEntries: [],
+            customLogo: null
+        };
+
+        // Recipe List
+        const recipesData = [
+            {
+                id: 1,
+                title: "Nasi Kerabu Ayam Panggang",
+                category: "utama",
+                calories: 390,
+                protein: "34g",
+                carbs: "48g",
+                fat: "7g",
+                tags: ["Rendah Kalori", "Tinggi Protein"],
+                desc: "Nasi bunga telang bersama ulam-ulaman segar, dada ayam panggang tanpa kulit, & sambal tumis nipis.",
+                img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 2,
+                title: "Overnight Oats Stroberi & Pisang",
+                category: "sarapan",
+                calories: 290,
+                protein: "11g",
+                carbs: "49g",
+                fat: "5g",
+                tags: ["Comel", "Sarapan Cepat"],
+                desc: "Havermut direndam susu badam semalaman, ditabur potongan stroberi segar dan serbuk chia.",
+                img: "https://images.unsplash.com/photo-1517673132405-a56a62b18caf?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 3,
+                title: "Sup Sayur & Dada Ayam Herba",
+                category: "utama",
+                calories: 320,
+                protein: "36g",
+                carbs: "18g",
+                fat: "8g",
+                tags: ["Defisit Kalori", "Sihat"],
+                desc: "Sup brokkoli, lobak merah dan dada ayam diperap lada hitam dipanggang bersih.",
+                img: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 4,
+                title: "Telur Rebus & Roti Wholemeal",
+                category: "sarapan",
+                calories: 260,
+                protein: "16g",
+                carbs: "22g",
+                fat: "10g",
+                tags: ["Ringkas", "Protein"],
+                desc: "2 biji telur separuh masak bersama roti gandum utuh panggang & taburan lada sulah.",
+                img: "https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80"
+            },
+            {
+                id: 5,
+                title: "Smoothie Beri & Yogurt Pink",
+                category: "snek",
+                calories: 190,
+                protein: "8g",
+                carbs: "32g",
+                fat: "2g",
+                tags: ["Snek Pink", "Segar"],
+                desc: "Kisar buah beri campuran bersama yogurt Greek rendah lemak dan sedikit madu asli.",
+                img: "https://images.unsplash.com/photo-1553530666-ba11a7da3888?auto=format&fit=crop&w=600&q=80"
+            }
+        ];
+
+        // Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            loadLocalStorage();
+            updateDateDisplay();
+            renderWaterGrid();
+            renderDiaryUI();
+            renderRecipes('all');
+            calculateCalories();
+        });
+
+        // Logo Upload Handler
+        function handleLogoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    appState.customLogo = e.target.result;
+                    document.getElementById('app-logo-img').src = e.target.result;
+                    document.getElementById('welcome-logo-img').src = e.target.result;
+                    saveLocalStorage();
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Tab Switcher
+        function switchTab(tabName) {
+            const tabs = ['tracker', 'calculator', 'recipes', 'github'];
+            tabs.forEach(tab => {
+                const section = document.getElementById(`section-${tab}`);
+                const navBtn = document.getElementById(`nav-${tab}`);
+                if (tab === tabName) {
+                    section.classList.remove('hidden');
+                    if(navBtn) navBtn.classList.add('active');
+                } else {
+                    section.classList.add('hidden');
+                    if(navBtn) navBtn.classList.remove('active');
+                }
+            });
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function updateDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const today = new Date().toLocaleDateString('ms-MY', options);
+            document.getElementById('date-display').textContent = today;
+        }
+
+        // LocalStorage Management
+        function saveLocalStorage() {
+            localStorage.setItem('danish_kalori_state', JSON.stringify(appState));
+        }
+
+        function loadLocalStorage() {
+            const saved = localStorage.getItem('danish_kalori_state');
+            if (saved) {
+                try {
+                    appState = JSON.parse(saved);
+                    if (appState.customLogo) {
+                        document.getElementById('app-logo-img').src = appState.customLogo;
+                        document.getElementById('welcome-logo-img').src = appState.customLogo;
+                    }
+                } catch(e) {
+                    console.error("Gagal membaca LocalStorage", e);
+                }
+            }
+            updateTrackerSummary();
+        }
+
+        // Tracker Updates
+        function updateTrackerSummary() {
+            const totalEaten = appState.foodEntries.reduce((sum, item) => sum + item.calories, 0);
+            const remaining = appState.targetCalories - totalEaten;
+            const progressPct = Math.min(Math.round((totalEaten / appState.targetCalories) * 100), 100);
+
+            document.getElementById('calories-eaten').textContent = totalEaten;
+            document.getElementById('calorie-target-display').textContent = appState.targetCalories;
+            document.getElementById('calories-remaining').textContent = remaining;
+            
+            const progressBar = document.getElementById('calorie-progress-bar');
+            progressBar.style.width = `${progressPct}%`;
+
+            document.getElementById('progress-percentage-text').textContent = `${progressPct}% Dicapai`;
+            document.getElementById('water-intake-text').innerHTML = `${appState.waterIntake} <span class="text-sm font-normal text-slate-400">ml</span>`;
+            document.getElementById('water-glass-count').textContent = `${Math.floor(appState.waterIntake / 250)} daripada ${appState.waterTarget / 250} gelas (250ml)`;
+        }
+
+        // Water Functions
+        function addWater(amount) {
+            appState.waterIntake = Math.min(appState.waterIntake + amount, 4000);
+            saveLocalStorage();
+            updateTrackerSummary();
+            renderWaterGrid();
+        }
+
+        function resetWater() {
+            appState.waterIntake = 0;
+            saveLocalStorage();
+            updateTrackerSummary();
+            renderWaterGrid();
+        }
+
+        function renderWaterGrid() {
+            const grid = document.getElementById('water-icons-grid');
+            grid.innerHTML = '';
+            const totalGlasses = 10;
+            const filledGlasses = Math.floor(appState.waterIntake / 250);
+
+            for (let i = 0; i < totalGlasses; i++) {
+                const drop = document.createElement('div');
+                drop.className = `h-9 rounded-xl flex items-center justify-center transition-all ${
+                    i < filledGlasses ? 'bg-sky-400 text-white shadow-sm scale-105' : 'bg-slate-100 text-slate-300'
+                }`;
+                drop.innerHTML = `<i data-lucide="droplet" class="w-4 h-4"></i>`;
+                grid.appendChild(drop);
+            }
+            lucide.createIcons();
+        }
+
+        // Food Entry Handler
+        function handleAddFood(e) {
+            e.preventDefault();
+            const nameInput = document.getElementById('food-name');
+            const calInput = document.getElementById('food-calories');
+            const mealSelect = document.getElementById('meal-type');
+
+            const newFood = {
+                id: Date.now(),
+                name: nameInput.value.trim(),
+                calories: parseInt(calInput.value),
+                mealType: mealSelect.value
+            };
+
+            appState.foodEntries.push(newFood);
+            saveLocalStorage();
+
+            nameInput.value = '';
+            calInput.value = '';
+
+            updateTrackerSummary();
+            renderDiaryUI();
+        }
+
+        function removeFood(id) {
+            appState.foodEntries = appState.foodEntries.filter(item => item.id !== id);
+            saveLocalStorage();
+            updateTrackerSummary();
+            renderDiaryUI();
+        }
+
+        function clearAllDiary() {
+            if (confirm("Adakah anda pasti mahu memadamkan semua rekod pemakanan hari ini?")) {
+                appState.foodEntries = [];
+                saveLocalStorage();
+                updateTrackerSummary();
+                renderDiaryUI();
+            }
+        }
+
+        function renderDiaryUI() {
+            const meals = ['Sarapan', 'Tengah Hari', 'Malam', 'Snek'];
+
+            meals.forEach(meal => {
+                const listEl = document.getElementById(`list-${meal}`);
+                const totalEl = document.getElementById(`total-${meal}`);
+                const entries = appState.foodEntries.filter(item => item.mealType === meal);
+
+                const totalCal = entries.reduce((sum, item) => sum + item.calories, 0);
+                totalEl.textContent = `${totalCal} kcal`;
+
+                if (entries.length === 0) {
+                    listEl.innerHTML = `<p class="text-xs text-slate-300 italic">Tiada makanan dicatat lagi</p>`;
+                } else {
+                    listEl.innerHTML = entries.map(item => `
+                        <div class="flex justify-between items-center bg-pink-50/40 p-2.5 rounded-2xl border border-pink-100/60">
+                            <div>
+                                <span class="text-xs font-bold text-slate-800 block">${item.name}</span>
+                                <span class="text-[11px] font-bold text-pink-600">${item.calories} kcal</span>
+                            </div>
+                            <button onclick="removeFood(${item.id})" class="text-slate-300 hover:text-rose-500 p-1 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    `).join('');
+                }
+            });
+
+            lucide.createIcons();
+        }
+
+        // BMR Calculator
+        function calculateCalories(e) {
+            if(e) e.preventDefault();
+
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const age = parseFloat(document.getElementById('calc-age').value) || 23;
+            const weight = parseFloat(document.getElementById('calc-weight').value) || 58;
+            const height = parseFloat(document.getElementById('calc-height').value) || 160;
+            const activityMultiplier = parseFloat(document.getElementById('calc-activity').value) || 1.375;
+            const goalAdjustment = parseFloat(document.getElementById('calc-goal').value) || -400;
+
+            let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+            bmr = gender === 'male' ? bmr + 5 : bmr - 161;
+
+            const tdee = Math.round(bmr * activityMultiplier);
+            const target = Math.max(1200, Math.round(tdee + goalAdjustment));
+
+            const proteinGrams = Math.round((target * 0.30) / 4);
+            const carbsGrams = Math.round((target * 0.40) / 4);
+            const fatGrams = Math.round((target * 0.30) / 9);
+
+            document.getElementById('res-bmr').textContent = Math.round(bmr).toLocaleString();
+            document.getElementById('res-tdee').textContent = tdee.toLocaleString();
+            document.getElementById('res-target').innerHTML = `${target.toLocaleString()} <span class="text-lg font-normal opacity-90">kcal / hari</span>`;
+            
+            document.getElementById('res-protein').textContent = `${proteinGrams}g`;
+            document.getElementById('res-carbs').textContent = `${carbsGrams}g`;
+            document.getElementById('res-fat').textContent = `${fatGrams}g`;
+
+            window.tempCalculatedTarget = target;
+        }
+
+        function applyCalorieTarget() {
+            if (window.tempCalculatedTarget) {
+                appState.targetCalories = window.tempCalculatedTarget;
+                saveLocalStorage();
+                updateTrackerSummary();
+                switchTab('tracker');
+            }
+        }
+
+        // Recipes Render
+        function filterRecipes(category) {
+            const buttons = document.querySelectorAll('.recipe-filter-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-pink-500', 'text-white');
+                btn.classList.add('bg-white', 'border', 'border-pink-200', 'text-pink-600');
+            });
+            event.target.classList.remove('bg-white', 'border', 'border-pink-200', 'text-pink-600');
+            event.target.classList.add('bg-pink-500', 'text-white');
+
+            renderRecipes(category);
+        }
+
+        function renderRecipes(category) {
+            const grid = document.getElementById('recipes-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all' 
+                ? recipesData 
+                : recipesData.filter(item => item.category === category);
+
+            filtered.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-3xl border border-pink-100 custom-shadow overflow-hidden flex flex-col justify-between hover:scale-[1.01] transition-all";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-44 w-full overflow-hidden relative">
+                            <img src="${recipe.img}" alt="${recipe.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-pink-600 shadow-sm">
+                                ${recipe.calories} kcal
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <div class="flex gap-1.5 flex-wrap mb-2">
+                                ${recipe.tags.map(tag => `<span class="text-[10px] bg-pink-50 text-pink-600 font-bold px-2 py-0.5 rounded-md border border-pink-100">${tag}</span>`).join('')}
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-sm mb-1">${recipe.title}</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed mb-4">${recipe.desc}</p>
+                            
+                            <div class="grid grid-cols-3 gap-2 bg-pink-50/30 p-2.5 rounded-2xl text-center text-xs border border-pink-100/50">
+                                <div><span class="text-slate-400 block text-[10px]">Protein</span><span class="font-bold text-slate-700">${recipe.protein}</span></div>
+                                <div><span class="text-slate-400 block text-[10px]">Karbo</span><span class="font-bold text-slate-700">${recipe.carbs}</span></div>
+                                <div><span class="text-slate-400 block text-[10px]">Lemak</span><span class="font-bold text-slate-700">${recipe.fat}</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5 pt-0">
+                        <button onclick="quickAddRecipe('${recipe.title}', ${recipe.calories})" class="w-full bg-pink-50 hover:bg-pink-100 text-pink-600 text-xs font-bold py-2.5 rounded-2xl transition-colors flex items-center justify-center gap-1.5">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Tambah Ke Diari
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function quickAddRecipe(name, calories) {
+            appState.foodEntries.push({
+                id: Date.now(),
+                name: name,
+                calories: calories,
+                mealType: 'Tengah Hari'
+            });
+            saveLocalStorage();
+            updateTrackerSummary();
+            renderDiaryUI();
+            switchTab('tracker');
+        }
+    </script>
+</body>
+</html>
